@@ -6,6 +6,8 @@ Pobiera z Google Drive HTML terminarza i wyników, archiwizuje i pokazuje na jed
 
 ```bash
 run_ai_dziennik.bat
+# albo (Git Bash / Linux, wspólny venv w ../.venv):
+./run_ai_dziennik.sh
 ```
 
 albo:
