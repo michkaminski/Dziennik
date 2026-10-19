@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+data/secrets/
+data/archive/
+*.db
+*.lock
+.pytest_cache/
+*.lnk

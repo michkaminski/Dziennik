@@ -1,0 +1,95 @@
+:root {
+  --bg: #f4f1e8;
+  --ink: #111;
+  --line: #cfc7b6;
+  --accent: #0b5c42;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 13px/1.35 "Courier New", Courier, monospace;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  background: #efebe0;
+}
+h1 { margin: 0; font-size: 15px; letter-spacing: 0.02em; }
+header p { margin: 2px 0 0; color: #555; font-size: 11px; }
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.date-form {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.date-form label { color: #555; }
+.date-form select {
+  font: inherit;
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 6px 8px;
+}
+button {
+  font: inherit;
+  background: var(--accent);
+  color: #fff;
+  border: 0;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+.flash { margin: 0; padding: 8px 14px; border-bottom: 1px solid var(--line); }
+.flash-ok { background: #e7f5ee; }
+.flash-danger { background: #fde8e8; }
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  flex: 1;
+  min-height: 0;
+}
+.panel {
+  padding: 8px 10px 14px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.panel + .panel {
+  border-left: 1px solid var(--line);
+}
+.panel h2 {
+  margin: 0 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 4px;
+}
+.panel h2 span { color: #666; font-weight: normal; }
+iframe {
+  width: 100%;
+  flex: 1;
+  min-height: calc(100vh - 120px);
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.empty { color: #666; font-style: italic; padding: 12px; }
+
+@media (max-width: 900px) {
+  .columns { grid-template-columns: 1fr; }
+  .panel + .panel { border-left: 0; border-top: 1px solid var(--line); }
+  iframe { min-height: 55vh; }
+}

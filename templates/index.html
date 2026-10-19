@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPORTOMATYKA / AI DZIENNIK</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <div>
+      <h1>SPORTOMATYKA / AI DZIENNIK</h1>
+      <p>Terminarz i wyniki — HTML z Google Drive</p>
+    </div>
+    <div class="toolbar">
+      <form class="date-form" method="get" action="{{ url_for('index') }}">
+        <label for="date">Data</label>
+        <select id="date" name="date" {% if not dates %}disabled{% endif %} onchange="this.form.submit()">
+          {% if not dates %}
+          <option value="">Brak plików</option>
+          {% else %}
+          {% for d in dates %}
+          <option value="{{ d }}" {% if d == selected_date %}selected{% endif %}>{{ d }}</option>
+          {% endfor %}
+          {% endif %}
+        </select>
+      </form>
+      <form method="post" action="{{ url_for('sync_now') }}">
+        {% if selected_date %}<input type="hidden" name="date" value="{{ selected_date }}">{% endif %}
+        <button type="submit">Pobierz z Dysku</button>
+      </form>
+    </div>
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% for category, message in messages %}
+  <p class="flash flash-{{ category }}">{{ message }}</p>
+  {% endfor %}
+  {% endwith %}
+
+  <main class="columns">
+    <section class="panel">
+      <h2>TERMINARZ{% if terminarz %} <span>{{ terminarz.report_date or terminarz.file_name }}</span>{% endif %}</h2>
+      {% if terminarz %}
+      <iframe title="Terminarz" src="{{ url_for('view', kind='terminarz', date=selected_date) }}"></iframe>
+      {% else %}
+      <p class="empty">{% if selected_date %}Brak terminarza na {{ selected_date }}.{% else %}Brak terminarza w archiwum.{% endif %}</p>
+      {% endif %}
+    </section>
+
+    <section class="panel">
+      <h2>WYNIKI{% if wyniki %} <span>{{ wyniki.report_date or wyniki.file_name }}</span>{% elif wyniki_date %} <span>{{ wyniki_date }}</span>{% endif %}</h2>
+      {% if wyniki %}
+      <iframe title="Wyniki" src="{{ url_for('view', kind='wyniki', date=wyniki_date) }}"></iframe>
+      {% else %}
+      <p class="empty">{% if wyniki_date %}Brak wyników na {{ wyniki_date }} (dzień poprzedni).{% else %}Brak wyników w archiwum.{% endif %}</p>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>
