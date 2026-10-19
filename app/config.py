@@ -36,10 +36,10 @@ def load_settings() -> Settings:
         flask_host=os.getenv("FLASK_HOST", "127.0.0.1"),
         flask_port=int(os.getenv("FLASK_PORT", "2613")),
         drive_folder_terminarze=os.getenv(
-            "DRIVE_FOLDER_TERMINARZE", "1b4fGLuJdEKdyAh6dQj-EWtnyP62Adu6a"
+            "DRIVE_FOLDER_TERMINARZE", ""
         ),
         drive_folder_wyniki=os.getenv(
-            "DRIVE_FOLDER_WYNIKI", "1gqxtX3s6jELxpJFNev6cZwhkzycfEY7f"
+            "DRIVE_FOLDER_WYNIKI", ""
         ),
         google_client_id=os.getenv("GOOGLE_CLIENT_ID", ""),
         google_client_secret=os.getenv("GOOGLE_CLIENT_SECRET", ""),
