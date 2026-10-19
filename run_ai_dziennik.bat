@@ -13,6 +13,11 @@ set "LNK=%ROOT%\SPORTOMATYKA AI Dziennik.lnk"
 
 title SPORTOMATYKA AI Dziennik
 
+if not exist "%ROOT%\.env" if exist "%ROOT%\.env.example" (
+  copy "%ROOT%\.env.example" "%ROOT%\.env" >nul
+  echo Utworzono .env z .env.example - uzupelnij dane w %ROOT%\.env
+)
+
 where python >nul 2>&1
 if errorlevel 1 (
   echo [BLAD] Brak Python w PATH.

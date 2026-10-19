@@ -7,6 +7,11 @@ VENV="$ROOT/.venv"
 REQ="$ROOT/requirements.txt"
 MARKER="$VENV/.requirements.sha256"
 
+if [[ ! -f "$ROOT/.env" && -f "$ROOT/.env.example" ]]; then
+  cp "$ROOT/.env.example" "$ROOT/.env"
+  echo "Utworzono .env z .env.example - uzupelnij dane w $ROOT/.env"
+fi
+
 if [[ -x "$VENV/Scripts/python.exe" ]]; then
   PY="$VENV/Scripts/python.exe"
 elif [[ -x "$VENV/bin/python" ]]; then
