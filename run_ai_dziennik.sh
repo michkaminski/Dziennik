@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# Start SPORTOMATYKA AI Dziennik ze wspolnego venv (katalog wyzej: ../.venv).
+# Start SPORTOMATYKA AI Dziennik (odpowiednik run_ai_dziennik.bat, venv projektu: .venv).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-VENV="${VENV:-$(dirname "$ROOT")/.venv}"
+VENV="$ROOT/.venv"
 REQ="$ROOT/requirements.txt"
-MARKER="$VENV/.requirements_$(basename "$ROOT").sha256"
+MARKER="$VENV/.requirements.sha256"
 
 if [[ -x "$VENV/Scripts/python.exe" ]]; then
   PY="$VENV/Scripts/python.exe"
 elif [[ -x "$VENV/bin/python" ]]; then
   PY="$VENV/bin/python"
 else
-  echo "[1/3] Tworzenie wspolnego venv: $VENV ..."
+  echo "[1/3] Tworzenie .venv ..."
   BASE_PY="$(command -v python3 || command -v python || true)"
   if [[ -z "$BASE_PY" ]]; then
     echo "[BLAD] Brak Python w PATH." >&2
