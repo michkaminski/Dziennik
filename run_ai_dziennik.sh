@@ -31,8 +31,15 @@ OLD_HASH="$(cat "$MARKER" 2>/dev/null || true)"
 
 if [[ "$REQ_HASH" != "$OLD_HASH" ]]; then
   echo "[2/3] Instalacja requirements ..."
-  "$PY" -m pip install --upgrade pip
-  "$PY" -m pip install -r "$REQ"
+  if [[ "$PY" == "$VENV/bin/python" ]]; then
+    # Linux: odchudzony venv - bez cache pip i bez opisow API Google innych niz Drive
+    "$PY" -m pip install --no-cache-dir -r "$REQ"
+    DOCS="$("$PY" -c 'import googleapiclient, pathlib; print(pathlib.Path(googleapiclient.__file__).parent / "discovery_cache" / "documents")')"
+    find "$DOCS" -type f -name '*.json' ! -name 'drive.*' -delete
+  else
+    "$PY" -m pip install --upgrade pip
+    "$PY" -m pip install -r "$REQ"
+  fi
   echo "$REQ_HASH" > "$MARKER"
 else
   echo "[2/3] Zaleznosci aktualne."
