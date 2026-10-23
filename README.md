@@ -24,6 +24,28 @@ Adres: http://127.0.0.1:2613
 - przycisk **Pobierz z Dysku** na stronie
 - ręcznie: `python -m app.sync_cli`
 
+### Linux — usługa systemd
+
+W katalogu projektu, raz:
+
+```bash
+bash scripts/install-systemd.sh
+```
+
+To usługa użytkownika `ai-dziennik`: start przy bootcie (linger, bez zalogowania) i restart po awarii. Procesem jest `run_ai_dziennik.sh` (venv, zależności, `run.py`). Nasłuch z `.env`: `FLASK_HOST` / `FLASK_PORT`.
+
+```bash
+systemctl --user status ai-dziennik
+journalctl --user -u ai-dziennik -f
+systemctl --user restart ai-dziennik
+```
+
+Wariant systemowy (root, ten sam port — nie włączaj obu naraz):
+
+```bash
+bash scripts/install-systemd.sh system
+```
+
 ## Struktura
 
 ```text

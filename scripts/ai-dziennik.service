@@ -1,0 +1,23 @@
+[Unit]
+Description=SPORTOMATYKA AI Dziennik
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=exec
+WorkingDirectory=@ROOT@
+ExecStart=@ROOT@/run_ai_dziennik.sh
+Environment=PYTHONUNBUFFERED=1
+Environment=PATH="@PATH@"
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=300
+StartLimitIntervalSec=300
+StartLimitBurst=5
+SyslogIdentifier=ai-dziennik
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+@SERVICE_USER@
+[Install]
+WantedBy=@WANTED_BY@
