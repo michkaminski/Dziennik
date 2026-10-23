@@ -73,11 +73,48 @@ install_user() {
   echo "Logi:   journalctl --user -u ai-dziennik -f"
 }
 
-install_system() {
-  if systemctl --user is-active --quiet "$UNIT_NAME" 2>/dev/null; then
-    echo "[BLAD] Dziala juz usluga uzytkownika $UNIT_NAME. Zatrzymaj: systemctl --user disable --now $UNIT_NAME" >&2
+as_target_user() {
+  local target_user="$1"
+  shift
+  if [[ "$(id -un)" == "$target_user" ]]; then
+    if [[ -z "${XDG_RUNTIME_DIR:-}" && -d "/run/user/$(id -u)" ]]; then
+      export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+    fi
+    "$@"
+    return
+  fi
+  local uid runtime
+  uid="$(id -u "$target_user")"
+  runtime="/run/user/$uid"
+  if [[ ! -S "$runtime/bus" ]]; then
+    return 1
+  fi
+  sudo -u "$target_user" env XDG_RUNTIME_DIR="$runtime" \
+    DBUS_SESSION_BUS_ADDRESS="unix:path=$runtime/bus" \
+    "$@"
+}
+
+retire_user_service() {
+  local target_user="$1"
+  local home_dir unit_path
+  home_dir="$(getent passwd "$target_user" | cut -d: -f6)"
+  if [[ -z "$home_dir" ]]; then
+    echo "[BLAD] Nieznany uzytkownik $target_user" >&2
     exit 1
   fi
+  if [[ "$(id -un)" == "$target_user" && -n "${XDG_CONFIG_HOME:-}" ]]; then
+    unit_path="$XDG_CONFIG_HOME/systemd/user/$UNIT_NAME"
+  else
+    unit_path="$home_dir/.config/systemd/user/$UNIT_NAME"
+  fi
+  as_target_user "$target_user" systemctl --user disable --now "$UNIT_NAME" || true
+  if [[ -f "$unit_path" ]]; then
+    rm -f "$unit_path"
+    as_target_user "$target_user" systemctl --user daemon-reload || true
+  fi
+}
+
+install_system() {
   if [[ "$(id -u)" -ne 0 ]]; then
     if ! command -v sudo >/dev/null; then
       echo "[BLAD] Uruchom jako root: bash $SCRIPT system" >&2
@@ -86,11 +123,18 @@ install_system() {
     exec sudo -E bash "$SCRIPT" system
   fi
   local target_user="${SUDO_USER:-$USER}"
+  if [[ "$target_user" == "root" ]]; then
+    echo "[BLAD] Uruchom ze swojego konta: bash $SCRIPT system" >&2
+    exit 1
+  fi
+  retire_user_service "$target_user"
   local target_group
   target_group="$(id -gn "$target_user")"
   chmod +x "$ROOT/run_ai_dziennik.sh"
   render_unit "multi-user.target" $'User='"$target_user"$'\nGroup='"$target_group"$'\n' >"/etc/systemd/system/$UNIT_NAME"
   enable_and_start systemctl
+  echo "Usluga systemowa $UNIT_NAME, proces jako $target_user."
+  echo "Cockpit: Uslugi -> ai-dziennik"
   echo "Status: systemctl status $UNIT_NAME"
   echo "Logi:   journalctl -u ai-dziennik -f"
 }

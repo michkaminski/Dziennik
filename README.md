@@ -40,7 +40,7 @@ journalctl --user -u ai-dziennik -f
 systemctl --user restart ai-dziennik
 ```
 
-Wariant systemowy (root, ten sam port — nie włączaj obu naraz):
+W Cockpit (start, stop, restart) widać usługę systemową. Ta komenda wyłącza usługę użytkownika i zakłada systemową; proces zostaje na koncie, które ją uruchamia (`User=`, u Ciebie `michal`):
 
 ```bash
 bash scripts/install-systemd.sh system
